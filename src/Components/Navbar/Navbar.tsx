@@ -16,6 +16,7 @@ const Navbar: React.FC = () => (
     <SearchInput />
     {/* <Directory /> */}
     <RightContent />
+    {console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)}
   </Flex>
 );
 export default Navbar;
