@@ -19,7 +19,7 @@ export interface CommunitySnippet{
 //Define CommunityState type which contains a custom type CommunitySnippet
 interface CommunityState{
     mySnippets: CommunitySnippet[];
-    //visistedCommunitites
+    currentCommunity?: Community;
 }
 
 const defaultCommunityState: CommunityState = {
