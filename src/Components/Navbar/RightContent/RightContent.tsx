@@ -1,7 +1,6 @@
 import AuthModal from "@/Components/Modal/Auth/AuthModal";
-import { auth } from "@/firebase/clientApp";
-import { Button, Flex, Icon } from "@chakra-ui/react";
-import { signOut, User } from "firebase/auth";
+import { Flex } from "@chakra-ui/react";
+import { User } from "firebase/auth";
 import React from "react";
 import AuthButtons from "./AuthButtons";
 import Icons from "./Icons";

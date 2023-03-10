@@ -8,12 +8,10 @@ import { auth, firestore } from "@/firebase/clientApp";
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   increment,
   writeBatch,
 } from "firebase/firestore";
-import { write } from "fs";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useSetRecoilState } from "recoil";
