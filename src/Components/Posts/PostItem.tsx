@@ -21,6 +21,7 @@ import {
   IoArrowUpCircleOutline,
   IoArrowUpCircleSharp,
 } from "react-icons/io5";
+import { useRouter } from "next/router";
 
 type PostItemProps = {
   post: Post;
@@ -48,6 +49,7 @@ const PostItem: React.FC<PostItemProps> = ({
   const [error, setError] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const singlePostPage = !onSelectPost;
+  const router = useRouter();
 
   const handleDelete = async (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -60,6 +62,9 @@ const PostItem: React.FC<PostItemProps> = ({
         throw new Error("Failed to delete post.");
       }
       console.log("Post successfully deleted");
+      if (singlePostPage) {
+        router.push(`/r/${post.communityId}`);
+      }
     } catch (error: any) {
       setError(error.message);
     }
