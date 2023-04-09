@@ -73,6 +73,7 @@ const useCommunityData = () => {
       const newSnippet: CommunitySnippet = {
         communityId: communityData.id,
         imageURL: communityData.imageURL || "",
+        isModerator: user?.uid === communityData.creatorId,
       };
 
       batch.set(
@@ -109,7 +110,7 @@ const useCommunityData = () => {
         doc(firestore, `users/${user?.uid}/communitySnippets`, communityId)
       );
 
-      batch.update(doc(firestore, "communites", communityId), {
+      batch.update(doc(firestore, "communities", communityId), {
         numberOfMembers: increment(-1),
       });
 
