@@ -1,13 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import PageContent from "@/Components/Layouts/PageContent";
 
 export default function Home() {
   return (
-    <>
-     
-    </>
-  )
+    <PageContent>
+      <></>
+      <></>
+    </PageContent>
+  );
 }
