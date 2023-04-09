@@ -21,11 +21,11 @@ import {
   orderBy,
   getDocs,
 } from "firebase/firestore";
+import { write } from "fs";
 import React, { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import CommentInput from "./CommentInput";
-import CommentItem from "./CommentItem";
-import Comment from "./CommentItem";
+import CommentItem, { Comment } from "./CommentItem";
 
 type CommentsProps = {
   user: User;
@@ -41,8 +41,10 @@ const Comments: React.FC<CommentsProps> = ({
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [loadingDeleteId, setLoadingDeleteId] = useState("");
   const [createLoading, setCreateLoading] = useState(false);
   const setPostState = useSetRecoilState(postState);
+
   const onCreateComment = async () => {
     setCreateLoading(true);
     try {
@@ -90,13 +92,41 @@ const Comments: React.FC<CommentsProps> = ({
     setCreateLoading(false);
   };
 
-  const onDeleteComment = async (comment: any) => {};
+  const onDeleteComment = async (comment: Comment) => {
+    setLoadingDeleteId(comment.id);
+    try {
+      const batch = writeBatch(firestore);
+
+      const commentDocRef = doc(firestore, "comments", comment.id);
+      batch.delete(commentDocRef);
+
+      const postDocRef = doc(firestore, "posts", selectedPost?.id!);
+      batch.update(postDocRef, {
+        numberOfComments: increment(-1),
+      });
+
+      await batch.commit();
+
+      setPostState((prev) => ({
+        ...prev,
+        selectedPost: {
+          ...prev.selectedPost,
+          numberOfComments: prev.selectedPost?.numberOfComments! - 1,
+        } as Post,
+      }));
+
+      setComments((prev) => prev.filter((item) => item.id !== comment.id));
+    } catch (error) {
+      console.log("onDeleteComment error", error);
+    }
+    setLoadingDeleteId("");
+  };
 
   const getPostComments = async () => {
     try {
       const commentsQuery = query(
         collection(firestore, "comments"),
-        where("postid", "==", selectedPost?.id),
+        where("postId", "==", selectedPost?.id),
         orderBy("createdAt", "desc")
       );
 
@@ -105,7 +135,7 @@ const Comments: React.FC<CommentsProps> = ({
         id: doc.id,
         ...doc.data(),
       }));
-      setComments(comments as unknown as Comment[]);
+      setComments(comments as Comment[]);
     } catch (error) {
       console.log("getPostComments error", error);
     }
@@ -168,7 +198,7 @@ const Comments: React.FC<CommentsProps> = ({
                     key={comment.id}
                     comment={comment}
                     onDeleteComment={onDeleteComment}
-                    loadingDelete={false}
+                    loadingDelete={loadingDeleteId === comment.id}
                     userId={user.uid}
                   />
                 ))}
