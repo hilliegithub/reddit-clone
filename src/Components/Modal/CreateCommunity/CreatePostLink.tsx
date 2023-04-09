@@ -8,20 +8,27 @@ import { FaReddit } from "react-icons/fa";
 import { IoImageOutline } from "react-icons/io5";
 import { useSetRecoilState } from "recoil";
 import { useRouter as NextUseRouter } from "next/router";
+import useDirectory from "@/Hooks/useDirectory";
 
 const CreatePostLink: React.FC = () => {
   const router = NextUseRouter();
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(authModalState);
 
-  //   const { toggleMenuOpen } = useDirectory();
+  const { toggleMenuOpen } = useDirectory();
   const onClick = () => {
     if (!user) {
       setAuthModalState({ open: true, view: "login" });
       return;
     }
     const { communityId } = router.query;
-    router.push(`/r/${communityId}/submit`);
+
+    if (communityId) {
+      router.push(`/r/${communityId}/submit`);
+      return;
+    }
+
+    toggleMenuOpen();
   };
   return (
     <Flex
