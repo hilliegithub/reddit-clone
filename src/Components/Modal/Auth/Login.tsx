@@ -18,7 +18,7 @@ const Login: React.FC<LoginProps> = () => {
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
-  const onSubmit = (event: React.FormEvent<HTMLInputElement>) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     signInWithEmailAndPassword(loginForm.email, loginForm.password);
