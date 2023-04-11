@@ -8,7 +8,7 @@ import Posts from "@/Components/Posts/Posts";
 import { firestore } from "@/firebase/clientApp";
 import { doc, getDoc } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import safeJsonStringy from "safe-json-stringify";
 
@@ -18,30 +18,48 @@ type CoummunityPageProps = {
 
 const CoummunityPage: React.FC<CoummunityPageProps> = ({ communityData }) => {
   // console.log("Data", communityData);
+  const [isCommunityNotFound, setIsCommunityNotFound] = useState(false);
   const setCommunityStateValue = useSetRecoilState(communityState);
-  if (!communityData) {
-    return <CommunityNotFound />;
-  }
+  // if (!communityData) {
+  //   return <CommunityNotFound />;
+  // }
+
+  // useEffect(() => {
+  //   setCommunityStateValue((prev) => ({
+  //     ...prev,
+  //     currentCommunity: communityData,
+  //   }));
+  // }, [communityData]);
 
   useEffect(() => {
+    if (!communityData) {
+      setIsCommunityNotFound(true);
+      return;
+    }
+    setIsCommunityNotFound(false);
     setCommunityStateValue((prev) => ({
       ...prev,
       currentCommunity: communityData,
     }));
-  }, [communityData]);
-
+  }, [communityData, setCommunityStateValue]);
   return (
     <>
-      <Header communityData={communityData} />
-      <PageContent>
+      {isCommunityNotFound ? (
+        <CommunityNotFound />
+      ) : (
         <>
-          <CreatePostLink />
-          <Posts communityData={communityData} />
+          <Header communityData={communityData} />
+          <PageContent>
+            <>
+              <CreatePostLink />
+              <Posts communityData={communityData} />
+            </>
+            <>
+              <About communityData={communityData} />
+            </>
+          </PageContent>
         </>
-        <>
-          <About communityData={communityData} />
-        </>
-      </PageContent>
+      )}
     </>
   );
 };
